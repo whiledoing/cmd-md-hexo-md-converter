@@ -146,7 +146,7 @@ def help():
 def run():
     if len(sys.argv) <= 1: return help()
 
-    cp_file_dir_path = sys.argv[1]
+    cp_file_dir_path = os.path.abspath(sys.argv[1])
     if not os.path.exists(cp_file_dir_path): os.makedirs(cp_file_dir_path)
 
     if len(sys.argv) == 3 and sys.argv[2] == 'all':

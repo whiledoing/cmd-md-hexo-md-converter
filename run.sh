@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PWD=`cd $(dirname $0); pwd;`
-HEXO_BLOG_DIR="~/work/proj/hexo-blog"
+HEXO_BLOG_DIR="$HOME/work/proj/hexo-blog"
 HEXO_POST_DIR="$HEXO_BLOG_DIR/source/_posts"
 
 (
