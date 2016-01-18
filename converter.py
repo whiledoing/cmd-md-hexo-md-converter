@@ -4,6 +4,8 @@
 import os
 import sys
 import shutil
+import time
+import datetime
 
 FIRST_N_LINE_FOR_HEADER_CHECK = 30
 CHAPTER_MARKER = '#'
@@ -109,12 +111,22 @@ class CmdMd2HexoMdConvert(object):
 
         # join all line cache and all the other real content lines
         res['content'] = content_line_cache + list(f_in)
+
+        # @note use atime here for last modified time, if access the src file, means do convert
+        res['ctime'] = self._get_time_str_for_hexo(os.path.getctime(src))
+        res['mtime'] = self._get_time_str_for_hexo(os.path.getatime(src))
         return res
 
     def _write_impl(self, f_out, dst, out_info):
         out_md_list = []
         out_md_list.append(SEP_MARKER)
         out_md_list.append('title: %s' % out_info.get('title', ''))
+
+        if 'ctime' in out_info:
+            out_md_list.append('date: %s' % out_info['ctime'])
+
+        if 'mtime' in out_info:
+            out_md_list.append('updated: %s' % out_info['mtime'])
 
         if 'tags' in out_info:
             out_md_list.append('tags: [%s]' % ','.join(out_info['tags']))
@@ -129,9 +141,14 @@ class CmdMd2HexoMdConvert(object):
                 out_md_list.append(line.rstrip())
 
         f_out.write('\n'.join(out_md_list))
+        f_out.flush()
 
         # copy to global dst dir
         shutil.copy2(dst, os.path.join(self._copy_to_dst_dir, os.path.basename(dst)))
+
+    def _get_time_str_for_hexo(self, ts):
+        cur_d = datetime.datetime.fromtimestamp(ts)
+        return cur_d.strftime('%Y/%-m/%-d %T')
 
 def help():
     print '\n'.join([
