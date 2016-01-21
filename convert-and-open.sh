@@ -1,3 +1,4 @@
 #!/bin/bash
 # convert -> open in browser
-bash run.sh o
+PWD=`cd $(dirname $0); pwd`
+bash $PWD/run.sh o
